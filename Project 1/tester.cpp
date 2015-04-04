@@ -83,31 +83,6 @@ Tester::Tester(int argc,char **argv) {
 	if (argc == 1) {
 		skel = new Skeleton("wasp.skel");
 		skn = new skin("wasp.skin", skel->worldMatrixes);
-		/*
-		myCloth = new cloth();
-		myCloth->setSpringConstant(1000);
-		myCloth->setDampingFactor(10);
-		myCloth->setDensity(1.2);
-		myCloth->setDrag(0.4);
-		myCloth->setWind(wind);
-		std::vector<particle*> temp;
-		for (int i = 0; i < colSize; i++) {
-			temp.clear();
-			for (int j = 0; j < rowSize; j++) {
-				if (i == 0 && j == 0)
-					temp.push_back(new particle(Vector3(start.x + rowOffset *j, start.y - colOffset * i, start.z), mass, true));
-				else if (i == 0 && j == rowSize - 1)
-					temp.push_back(new particle(Vector3(start.x + rowOffset *j, start.y - colOffset * i, start.z), mass, true));
-				else
-					temp.push_back(new particle(Vector3(start.x + rowOffset *j, start.y - colOffset * i, start.z), mass, false));
-				//printf("Adding %f %f %f\n", start.x + rowOffset *j, start.y - colOffset * i, 0.0);
-			}
-			//printf("\n");
-			myCloth->particles.push_back(temp);
-		}
-		myCloth->setTriangles();
-		myCloth->setSpringDampers();
-		*/
 		anmtn = new animationClip("wasp_walk.anim", skel->joints);
 	}
 	else {
@@ -127,45 +102,6 @@ Tester::Tester(int argc,char **argv) {
 	glutMotionFunc( mousemotion );
 	glutPassiveMotionFunc( mousemotion );
 	glutReshapeFunc( resize );
-	/*
-	glui = GLUI_Master.create_glui("GLUI", 0);
-	for (int i = 0; i < skel->joints.size(); i++) {
-		GLUI_Spinner *dofSpinner;
-		spinnerList.push_back(dofSpinner);
-	}
-	for (int i = 0; i < skel->joints.size(); i++) {
-		if (skel->joints[i]->getTag().compare("x") == 0) {
-			std::string name = skel->joints[i]->getName();
-			name.append(" ");
-			name.append(skel->joints[i]->getTag());
-			char *altname = &name[0];
-			spinnerList[i] = glui->add_spinner(altname, GLUI_SPINNER_FLOAT);
-			spinnerList[i]->set_float_val(skel->joints[i]->getValue());
-		}
-	}
-	glui->add_column(true);
-	for (int i = 0; i < skel->joints.size(); i++) {
-		if (skel->joints[i]->getTag().compare("y") == 0) {
-			std::string name = skel->joints[i]->getName();
-			name.append(" ");
-			name.append(skel->joints[i]->getTag());
-			char *altname = &name[0];
-			spinnerList[i] = glui->add_spinner(altname, GLUI_SPINNER_FLOAT);
-			spinnerList[i]->set_float_val(skel->joints[i]->getValue());
-		}
-	}
-	glui->add_column(true);
-	for (int i = 0; i < skel->joints.size(); i++) {
-		if (skel->joints[i]->getTag().compare("z") == 0) {
-			std::string name = skel->joints[i]->getName();
-			name.append(" ");
-			name.append(skel->joints[i]->getTag());
-			char *altname = &name[0];
-			spinnerList[i] = glui->add_spinner(altname, GLUI_SPINNER_FLOAT);
-			spinnerList[i]->set_float_val(skel->joints[i]->getValue());
-		}
-	}
-	*/
 	// Initialize components
 
 	Cam.SetAspect(float(WinX)/float(WinY));
@@ -196,14 +132,8 @@ void Tester::Update() {
 	skel->calculate(id.IDENTITY);
 	skn->update();
 	// Tell glut to re-display the scene
-	//myCloth->Update(0.01);
-	//myCloth->setWind(wind);
 	glutSetWindow(WindowHandle);
 	glutPostRedisplay();
-	
-	//for (int i = 0; i < skel->joints.size(); i++) {
-	//	spinnerList[i]->set_float_val(skel->joints[i]->getValue());
-	//} 
 	
 }
 
@@ -226,34 +156,9 @@ void Tester::Draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Draw components
-	/*
-	Matrix34 id;
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(id);
-	glBegin(GL_QUADS);
-	glColor3d(0, 1, 0);
-	glNormal3f(0, 1, 0);
-	glVertex3f(-20, -10, -20);
-	glVertex3f(-20, -10, 20);
-	glVertex3f(20, -10, 20);
-	glVertex3f(20, -10, -20);
-	glEnd();
-	*/
-	//myCloth->Draw();
 	Cam.Draw();		// Sets up projection & viewing matrices
-	//Matrix34 id;
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf(id);
-	//glBegin(GL_QUADS);
-	//glColor3d(1, 0, 0);
-	//glVertex3f(2,  - 2,0);
-	//glVertex3f(2, + 2, 0);
-	//glVertex3f(- 2, +2,0);
-	//glVertex3f(- 2, -2, 0);
-	//glEnd();
 	skel->draw();
 	skn->draw();
-	//Cube.Draw();
 
 	// Finish drawing scene
 	glFinish();
@@ -283,62 +188,6 @@ void Tester::Keyboard(int key,int x,int y) {
 		case 0x1b:		// Escape
 			Quit();
 			break;
-			/*
-		case 'z':
-			wind.x += 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'Z':
-			wind.x -= 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'x':
-			wind.y += 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'X':
-			wind.y -= 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'c':
-			wind.z += 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'C':
-			wind.z -= 0.1;
-			wind.Print("New Wind:");
-			break;
-		case 'w':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveUp();
-			}
-			break;
-		case 's':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveDown();
-			}
-			break;
-		case 'a':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveLeft();
-			}
-			break;
-		case 'd':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveRight();
-			}
-			break;
-		case 'q':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveForward();
-			}
-			break;
-		case 'e':
-			for (int i = 0; i < myCloth->particles.size(); i++) {
-				myCloth->particles[0][i]->moveBackward();
-			}
-			break;
-			*/
 		case 'r':
 			Reset();
 			skel->reset();
